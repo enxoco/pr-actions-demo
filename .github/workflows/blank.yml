@@ -5,6 +5,9 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on pull request closed event but only for the "main" branch
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -32,3 +35,6 @@ jobs:
 
       - name: Verify changes
         run: cat test.txt
+
+      - name: Verify commit sha
+        run: echo alpha.${GITHUB_SHA::6}
