@@ -37,4 +37,6 @@ jobs:
         run: cat test.txt
 
       - name: Verify commit sha
-        run: echo ${GITHUB_SHA::7}
+        run: |
+          export COMMIT_SHA=${GITHUB_SHA::7}
+          echo $COMMIT_SHA
