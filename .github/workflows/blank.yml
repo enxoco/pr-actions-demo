@@ -29,3 +29,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo pr number ${{ github.event.number }}
+
+      - name: Verify changes
+        run: cat test.txt
