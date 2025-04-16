@@ -20,18 +20,17 @@ jobs:
           echo "$CHANGED_FILES"
           echo "$CHANGED_FILES" | grep 'sync-azure-blob-to-s3' && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
 
-      - name: Run deploy
+      - name: Set up Node.js
         if: steps.check_changes.outputs.changed == 'true'
-        run: |
-          deploy_dir=$(mktemp -d)
-          echo "dir $deploy_dir"
-          cd common/devops/scripts/sync-azure-blob-to-s3/
-          cp -r . "$deploy_dir"
-          cd "$deploy_dir" || exit 1
-          npm install && npm run build --omit=dev
-          echo "Dir: $deploy_dir"
-          zip -r deploy.zip . -x "local.settings.json" -x "*.md" -x "./**/*tsconfig.*" -x "*.d.ts" -x "tsconfig.json"
-          az functionapp deployment source config-zip \
-              --resource-group s3sync2 \
-              --name s3sync   \
-              --src deploy.zip
+        uses: ./.github/actions/setup-node
+
+      - name: Set up Azure CLI
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Run deploy script
+        if: steps.check_changes.outputs.changed == 'true'
+        run: ./common/devops/scripts/sync-azure-blob-to-s3/deploy.sh
