@@ -1,0 +1,37 @@
+name: Deploy Azure functions
+
+on:
+  pull_request_review:
+    types: [submitted]
+jobs:
+  run-deploy:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # So we can diff with base branch
+
+      - name: Check for folder changes
+        id: check_changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+          echo "$CHANGED_FILES"
+          echo "$CHANGED_FILES" | grep 'sync-azure-blob-to-s3' && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
+
+      - name: Run deploy
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          deploy_dir=$(mktemp -d)
+          echo "dir $deploy_dir"
+          cd common/devops/scripts/sync-azure-blob-to-s3/
+          cp -r . "$deploy_dir"
+          cd "$deploy_dir" || exit 1
+          npm install && npm run build --omit=dev
+          echo "Dir: $deploy_dir"
+          zip -r deploy.zip . -x "local.settings.json" -x "*.md" -x "./**/*tsconfig.*" -x "*.d.ts" -x "tsconfig.json"
+          az functionapp deployment source config-zip \
+              --resource-group s3sync2 \
+              --name s3sync   \
+              --src deploy.zip
