@@ -1,0 +1,32 @@
+name: E2E tests
+on:
+  workflow_dispatch:
+    inputs:
+      prNumber:
+        description: 'The number of the PR you would like to test'
+        required: true
+        default: 'warning'
+      environment:
+        description: 'The environment to run against: production, staging, pr'
+        required: true
+        default: 'pr'
+jobs:
+  playwright-pr-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
+
+    steps:
+      - name: Install packages
+        run: echo "Hello step 1 ${{ inputs.environment }}"
+  merge-reports:
+    needs: [playwright-pr-tests]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "hello world ${{ inputs.prNumber }}"
