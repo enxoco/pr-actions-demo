@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
-    if: inputs.skipTests != 'true'
+    if: inputs.skipTests != true
     strategy:
       fail-fast: false
       matrix:
@@ -38,6 +38,7 @@ jobs:
       - run: echo "Hello from ${{ inputs.environment }}"
       - run: cat version.txt
       - run: |
+          echo ${{ inputs.skipTests }}"
           echo "Running shard ${{ matrix.shardIndex }}"
           RANDOM_NUM=$((RANDOM % 2))
           echo "Random number: $RANDOM_NUM"
