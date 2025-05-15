@@ -2,6 +2,9 @@ name: E2E tests
 on:
   workflow_dispatch:
     inputs:
+      skipTests:
+        type: boolean
+        default: false
       prNumber:
         type: number
         description: 'The number of the PR you would like to test'
@@ -23,6 +26,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
+    if: ${{ inputs.skipTests != 'true' }}
     strategy:
       fail-fast: false
       matrix:
