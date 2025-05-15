@@ -7,6 +7,7 @@ on:
         required: true
         default: 'warning'
       environment:
+        type: environment
         description: 'The environment to run against: production, staging, pr'
         required: true
         default: 'pr'
