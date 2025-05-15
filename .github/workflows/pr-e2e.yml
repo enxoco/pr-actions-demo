@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       prNumber:
+        type: number
         description: 'The number of the PR you would like to test'
-        required: true
-        default: 'warning'
+        required: false
       environment:
         type: environment
         description: 'The environment to run against: production, staging, pr'
