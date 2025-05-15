@@ -23,11 +23,26 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     steps:
       - name: Install packages
         uses: actions/checkout@v4
       - run: echo "Hello from ${{ inputs.environment }}"
       - run: cat version.txt
+      - run: |
+          echo "Running shard ${{ matrix.shard }}"
+          RANDOM_NUM=$((RANDOM % 2))
+          echo "Random number: $RANDOM_NUM"
+          if [ "$RANDOM_NUM" -eq 0 ]; then
+            echo "💥 Simulating failure in shard ${{ matrix.shard }}"
+            exit 1
+          else
+            echo "✅ Shard ${{ matrix.shard }} passed"
+          fi  
   merge-reports:
     needs: [playwright-pr-tests]
     runs-on: ubuntu-24.04
