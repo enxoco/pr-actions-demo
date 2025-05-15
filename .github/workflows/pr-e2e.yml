@@ -50,6 +50,7 @@ jobs:
           fi  
   merge-reports:
     needs: [playwright-pr-tests]
+    if: ${{ needs.playwright-pr-tests.result != 'skipped' }}
     runs-on: ubuntu-24.04
     steps:
       - run: echo "hello world ${{ inputs.prNumber }}"
