@@ -38,7 +38,6 @@ jobs:
       - run: echo "Hello from ${{ inputs.environment }}"
       - run: cat version.txt
       - run: |
-          echo ${{ inputs.skipTests }}"
           echo "Running shard ${{ matrix.shardIndex }}"
           RANDOM_NUM=$((RANDOM % 2))
           echo "Random number: $RANDOM_NUM"
