@@ -32,4 +32,4 @@ jobs:
     needs: [playwright-pr-tests]
     runs-on: ubuntu-24.04
     steps:
-      - run: echo "hello world ${{ inputs.prNumber }}"
+      - run: echo "hello world ${{ inputs.prNumber ?? null }}"
