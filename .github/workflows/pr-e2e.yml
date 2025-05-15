@@ -10,6 +10,13 @@ on:
         description: 'The environment to run against: production, staging, pr'
         required: true
         default: 'pr'
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: 'The environment to run against: production, staging, pr'
+        required: true
+        default: 'pr'
 jobs:
   playwright-pr-tests:
     timeout-minutes: 60
@@ -24,7 +31,7 @@ jobs:
 
     steps:
       - name: Install packages
-        run: echo "Hello step 1 ${{ inputs.environment }}"
+        run: echo "Hello from ${{ inputs.environment }}"
   merge-reports:
     needs: [playwright-pr-tests]
     runs-on: ubuntu-24.04
