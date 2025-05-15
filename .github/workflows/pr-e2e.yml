@@ -46,6 +46,7 @@ jobs:
   merge-reports:
     needs: [playwright-pr-tests]
     runs-on: ubuntu-24.04
+    if: always()
     steps:
       - run: echo "hello world ${{ inputs.prNumber }}"
       - run: echo "runid ${{ github.run_id }}"
