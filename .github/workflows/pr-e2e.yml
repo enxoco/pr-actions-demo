@@ -27,6 +27,7 @@ jobs:
     runs-on: ubuntu-24.04
     continue-on-error: true
     environment: ${{ inputs.environment }}
+    if: ${{ skipTests != true }}
     strategy:
       fail-fast: false
       matrix:
