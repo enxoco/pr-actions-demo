@@ -38,7 +38,7 @@ jobs:
       - run: cat version.txt
       - run: |
           echo "Running shard ${{ matrix.shardIndex }}"
-          RANDOM_NUM=${{ matrix.shardIndex }}"
+          RANDOM_NUM=${{ matrix.shardIndex }}
           echo "Random number: $RANDOM_NUM"
           if [ "$RANDOM_NUM" -eq 3 ]; then
             echo "💥 Simulating failure in shard ${{ matrix.shardIndex }}"
