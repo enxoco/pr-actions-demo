@@ -22,7 +22,7 @@ on:
         required: true
         default: 'pr'
 jobs:
-  playwright-pr-tests:
+  playwright-tests:
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     continue-on-error: true
@@ -40,16 +40,14 @@ jobs:
       - run: cat version.txt
       - run: |
           echo "Running shard ${{ matrix.shardIndex }}"
-          RANDOM_NUM=${{ matrix.shardIndex }}
-          echo "Random number: $RANDOM_NUM"
-          if [ "$RANDOM_NUM" -eq 3 ]; then
+          if [ "${{ matrix.shardIndex }}" -eq 3 ]; then
             echo "💥 Simulating failure in shard ${{ matrix.shardIndex }}"
             exit 1
           else
             echo "✅ Shard ${{ matrix.shard }} passed"
           fi  
   merge-reports:
-    needs: [playwright-pr-tests]
+    needs: [playwright-tests]
     if: ${{ needs.playwright-pr-tests.result != 'skipped' }}
     runs-on: ubuntu-24.04
     steps:
