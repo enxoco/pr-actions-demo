@@ -1,0 +1,33 @@
+name: Validate app version bump
+
+on:
+  pull_request:
+    branches:
+      - release/**
+      - staging/**
+
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure app-meta version changed
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          VERSION=$(echo "${{ github.event.pull_request.body }}" \
+            | grep -i "^Version:" \
+            | awk '{print $2}')
+
+          if ! [[ "$VERSION" =~ ^[0-9]+$ ]]; then
+            echo "❌ Invalid or missing Version in PR description"
+            exit 1
+          fi
+
+          jq ".version = \"$VERSION\"" \
+            clients/libraries/app-meta/package.json > tmp.json
+
+          mv tmp.json clients/libraries/app-meta/package.json
+
+          echo "✅ app-meta version updated: $BEFORE → $AFTER"
+

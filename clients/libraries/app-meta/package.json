@@ -1,0 +1,12 @@
+{
+  "name": "app-meta",
+  "version": "1.0.0",
+  "app_version": 354,
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepare": "node src/generate.js"
+  }
+}
